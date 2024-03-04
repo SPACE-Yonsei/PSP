@@ -1,5 +1,16 @@
+#
+#       Copyright (c) 2019, United States government as represented by the
+#       administrator of the National Aeronautics Space Administration.
+#       All rights reserved. This software was created at NASA Goddard
+#       Space Flight Center pursuant to government contracts.
+#
+#       This is governed by the NASA Open Source Agreement and may be used,
+#       distributed and modified only according to the terms of that agreement.
+#
+
+
 # "Adaptors" help enable the unit test code to reach functions/objects that
-# are otherwise not exposed.
+# are otherwise not exposed.  
 
 # NOTE: These source files are compiled with OVERRIDES on the headers just like
 # the FSW code is compiled.  This is how it is able to include internal headers
@@ -21,7 +32,7 @@ target_include_directories(ut-adaptor-${CFE_PSP_TARGETNAME} PUBLIC
     ${PSPCOVERAGE_SOURCE_DIR}/shared/adaptors/inc
 )
 
-target_link_libraries(ut-adaptor-${CFE_PSP_TARGETNAME} PRIVATE
+target_link_libraries(ut-adaptor-${CFE_PSP_TARGETNAME} PRIVATE 
     psp_module_api
-    ut_assert
+    ut_assert 
 )

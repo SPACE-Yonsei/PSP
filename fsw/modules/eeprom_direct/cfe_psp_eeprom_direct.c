@@ -1,20 +1,22 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /*
 ** File   :	cfe_psp_eeprom.c
@@ -50,12 +52,27 @@ void eeprom_direct_Init(uint32 PspModuleId)
 ** global memory
 */
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*
+ ** Name: CFE_PSP_EepromWrite32
+ **
+ ** Purpose:
+ **
+ ** Assumptions and Notes:
+ **
+ ** Parameters:
+ **
+ ** Global Inputs: None
+ **
+ ** Global Outputs: None
+ **
+ **
+ ** Return Values:
+ **	 CFE_PSP_SUCCESS
+ **	 CFE_PSP_ERROR_TIMEOUT write operation did not go through after a specific
+ **   timeout.
+ **	 CFE_PSP_ERROR_ADD_MISALIGNED The Address is not aligned to 16 bit addressing
+ **   scheme.
+ */
 int32 CFE_PSP_EepromWrite32(cpuaddr MemoryAddress, uint32 uint32Value)
 {
     uint32 ret_value = CFE_PSP_SUCCESS;
@@ -63,21 +80,36 @@ int32 CFE_PSP_EepromWrite32(cpuaddr MemoryAddress, uint32 uint32Value)
     /* check 32 bit alignment  */
     if (MemoryAddress & 0x00000003)
     {
-        return CFE_PSP_ERROR_ADDRESS_MISALIGNED;
+        return (CFE_PSP_ERROR_ADDRESS_MISALIGNED);
     }
 
     /* make the Write */
     *((uint32 *)MemoryAddress) = uint32Value;
 
-    return ret_value;
+    return (ret_value);
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*
+ ** Name: CFE_PSP_EepromWrite16
+ **
+ ** Purpose:
+ **
+ ** Assumptions and Notes:
+ **
+ ** Parameters:
+ **
+ ** Global Inputs: None
+ **
+ ** Global Outputs: None
+ **
+ **
+ ** Return Values:
+ **   CFE_PSP_SUCCESS
+ **	 CFE_PSP_ERROR_TIMEOUT write operation did not go through after a specific
+ **   timeout.
+ **   CFE_PSP_ERROR_ADD_MISALIGNED The Address is not aligned to 16 bit addressing
+ **   scheme.
+ */
 int32 CFE_PSP_EepromWrite16(cpuaddr MemoryAddress, uint16 uint16Value)
 {
     uint32 write32;
@@ -89,7 +121,7 @@ int32 CFE_PSP_EepromWrite16(cpuaddr MemoryAddress, uint16 uint16Value)
     */
     if (MemoryAddress & 0x00000001)
     {
-        return CFE_PSP_ERROR_ADDRESS_MISALIGNED;
+        return (CFE_PSP_ERROR_ADDRESS_MISALIGNED);
     }
 
     temp32 = uint16Value;
@@ -149,15 +181,29 @@ int32 CFE_PSP_EepromWrite16(cpuaddr MemoryAddress, uint16 uint16Value)
     }
 #endif
 
-    return CFE_PSP_EepromWrite32(aligned_address, write32);
+    return (CFE_PSP_EepromWrite32(aligned_address, write32));
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*
+ ** Name: CFE_PSP_EepromWrite8
+ **
+ ** Purpose:
+ **
+ ** Assumptions and Notes:
+ **
+ ** Parameters:
+ **
+ ** Global Inputs: None
+ **
+ ** Global Outputs: None
+ **
+ **
+ ** Return Values:
+ **   CFE_PSP_SUCCESS
+ **	 CFE_PSP_ERROR_TIMEOUT write operation did not go through after a specific
+ **   timeout.
+ */
+
 int32 CFE_PSP_EepromWrite8(cpuaddr MemoryAddress, uint8 ByteValue)
 {
     uint32 aligned_address;
@@ -220,49 +266,99 @@ int32 CFE_PSP_EepromWrite8(cpuaddr MemoryAddress, uint8 ByteValue)
 
 #endif
 
-    return CFE_PSP_EepromWrite16(aligned_address, write16);
+    return (CFE_PSP_EepromWrite16(aligned_address, write16));
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*
+** Name: CFE_PSP_EepromWriteEnable
+**
+** Purpose:
+**		Enable the eeprom for write operation
+**
+** Assumptions and Notes:
+**
+** Parameters:
+**   Bank: Which bank of EEPROM
+**
+** Global Inputs: None
+**
+** Global Outputs: None
+**
+**
+** Return Values:
+**   CFE_PSP_SUCCESS
+*/
 int32 CFE_PSP_EepromWriteEnable(uint32 Bank)
 {
-    return CFE_PSP_SUCCESS;
+    return (CFE_PSP_SUCCESS);
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*
+** Name: CFE_PSP_EepromWriteDisable
+**
+** Purpose:
+**		Disable  the eeprom from write operation
+**
+** Assumptions and Notes:
+**
+** Parameters:
+**   Bank: Which bank of EEPROM
+**
+** Global Inputs: None
+**
+** Global Outputs: None
+**
+**
+** Return Values:
+**   CFE_PSP_SUCCESS
+*/
 int32 CFE_PSP_EepromWriteDisable(uint32 Bank)
 {
-    return CFE_PSP_SUCCESS;
+    return (CFE_PSP_SUCCESS);
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*
+** Name: CFE_PSP_EepromPowerUp
+**
+** Purpose:
+**		Power up the eeprom
+** Assumptions and Notes:
+**
+** Parameters:
+**   Bank: Which bank of EEPROM
+**
+** Global Inputs: None
+**
+** Global Outputs: None
+**
+**
+** Return Values:
+**   CFE_PSP_SUCCESS
+*/
 int32 CFE_PSP_EepromPowerUp(uint32 Bank)
 {
-    return CFE_PSP_SUCCESS;
+    return (CFE_PSP_SUCCESS);
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*
+** Name: CFE_PSP_EepromPowerDown
+**
+** Purpose:
+**		Power down the eeprom
+** Assumptions and Notes:
+**
+** Parameters:
+**   Bank: Which bank of EEPROM
+**
+** Global Inputs: None
+**
+** Global Outputs: None
+**
+**
+** Return Values:
+**   CFE_PSP_SUCCESS
+*/
 int32 CFE_PSP_EepromPowerDown(uint32 Bank)
 {
-    return CFE_PSP_SUCCESS;
+    return (CFE_PSP_SUCCESS);
 }

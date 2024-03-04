@@ -1,24 +1,6 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
-
 /* PSP coverage stub replacement for moduleLib.h */
-#ifndef PCS_MODULELIB_H
-#define PCS_MODULELIB_H
+#ifndef _PSP_STUB_MODULELIB_H_
+#define _PSP_STUB_MODULELIB_H_
 
 #include "PCS_basetypes.h"
 #include "PCS_vxWorks.h"
@@ -47,6 +29,7 @@ typedef struct PCS_MODULE_INFO
         unsigned long bssAddr;
         unsigned long bssSize;
     } segInfo;
+
 } PCS_MODULE_INFO;
 
 /* ----------------------------------------- */
@@ -56,4 +39,4 @@ typedef struct PCS_MODULE_INFO
 extern PCS_STATUS    PCS_moduleInfoGet(PCS_MODULE_ID moduleId, PCS_MODULE_INFO *pModuleInfo);
 extern PCS_MODULE_ID PCS_moduleFindByName(const char *moduleName);
 
-#endif
+#endif /* _PSP_STUB_MODULELIB_H_ */

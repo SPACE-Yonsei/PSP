@@ -1,20 +1,22 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /******************************************************************************
 ** File:  cfe_psp_start.c
@@ -105,6 +107,7 @@ typedef struct
 
     uint32 SpacecraftId;    /* Spacecraft ID */
     uint32 GotSpacecraftId; /* Did we get a Spacecraft ID */
+
 } CFE_PSP_CommandData_t;
 
 /*
@@ -141,6 +144,7 @@ static const struct option longOpts[] = {{"reset", required_argument, NULL, 'R'}
                                          {NULL, no_argument, NULL, 0}};
 
 /******************************************************************************
+**  Function:  CFE_PSP_OS_EventHandler()
 **
 **  Purpose:
 **    Linux Task creation event handler.
@@ -149,10 +153,7 @@ static const struct option longOpts[] = {{"reset", required_argument, NULL, 'R'}
 */
 int32 CFE_PSP_OS_EventHandler(OS_Event_t event, osal_id_t object_id, void *data)
 {
-    char      taskname[OS_MAX_API_NAME];
-    cpu_set_t cpuset;
-
-    memset(taskname, 0, sizeof(taskname));
+    char taskname[OS_MAX_API_NAME];
 
     switch (event)
     {
@@ -171,21 +172,6 @@ int32 CFE_PSP_OS_EventHandler(OS_Event_t event, osal_id_t object_id, void *data)
             /* Get the name from OSAL and propagate to the pthread/system layer */
             if (OS_GetResourceName(object_id, taskname, sizeof(taskname)) == OS_SUCCESS)
             {
-                /*
-                 * Example mechanism for setting thread affinity
-                 *
-                 * Could assign based on task name, pattern within name (CFE_* on 0,
-                 * *_CN where N is desired core), round robin or whatever the requrements are.
-                 *
-                 * Just assigning all "CFE_*" tasks to core zero and let the rest float.
-                 */
-                if (strncmp(taskname, "CFE_", 4) == 0)
-                {
-                    CPU_ZERO(&cpuset);
-                    CPU_SET(0, &cpuset);
-                    pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset);
-                }
-
                 /*
                  * glibc/kernel has an internal limit for this name.
                  * If the OSAL name is longer, just truncate it.
@@ -209,6 +195,7 @@ int32 CFE_PSP_OS_EventHandler(OS_Event_t event, osal_id_t object_id, void *data)
 }
 
 /******************************************************************************
+**  Function:  main()
 **
 **  Purpose:
 **    BSP Application entry point.
@@ -488,6 +475,7 @@ void OS_Application_Run(void)
 }
 
 /******************************************************************************
+**  Function:  CFE_PSP_DisplayUsage
 **
 **  Purpose:
 **    Display program usage, and exit.
@@ -500,6 +488,7 @@ void OS_Application_Run(void)
 */
 void CFE_PSP_DisplayUsage(char *Name)
 {
+
     printf("usage : %s [-R <value>] [-S <value>] [-C <value] [-N <value] [-I <value] [-h] \n", Name);
     printf("\n");
     printf("        All parameters are optional and can be used in any order\n");
@@ -531,10 +520,10 @@ void CFE_PSP_DisplayUsage(char *Name)
     printf("       %s --reset PO --subtype 1 --cpuid 1 --cpuname CPU1 --scid 32\n", Name);
     printf(" \n");
 
-    exit(EXIT_FAILURE);
+    exit(1);
 }
-
 /******************************************************************************
+**  Function: CFE_PSP_ProcessArgumentDefaults
 **
 **  Purpose:
 **    This function assigns defaults to parameters and checks to make sure

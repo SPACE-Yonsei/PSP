@@ -1,20 +1,22 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /******************************************************************************
 S
@@ -60,6 +62,7 @@ sigset_t CFE_PSP_AsyncMask;
  ***************************************************************************/
 
 /*
+** Name: CFE_PSP_ExceptionSigHandler
 **
 ** Installed as a signal handler to log exception events.
 **
@@ -110,6 +113,7 @@ void CFE_PSP_ExceptionSigHandler(int signo, siginfo_t *si, void *ctxt)
 }
 
 /*
+** Name: CFE_PSP_ExceptionSigHandlerSuspend
 **
 ** An extension of CFE_PSP_ExceptionSigHandler that also
 ** suspends the calling task and prevents returning to the
@@ -137,7 +141,8 @@ void CFE_PSP_ExceptionSigHandlerSuspend(int signo, siginfo_t *si, void *ctxt)
      * will be deleted by the CFE/OSAL.
      */
     sigsuspend(&CFE_PSP_AsyncMask);
-}
+
+} /* end function */
 
 /*
  * Helper function to call sigaction() to attach a signal handler
@@ -180,6 +185,7 @@ void CFE_PSP_AttachSigHandler(int signo)
 }
 
 /*
+**   Name: CFE_PSP_AttachExceptions
 **
 **   This is called from the CFE Main task, before any other threads
 **   are started.  Use this opportunity to install the handler for
@@ -208,7 +214,7 @@ void CFE_PSP_AttachExceptions(void)
      */
     backtrace(Addr, 1);
 
-    OS_printf("CFE_PSP: %s called\n", __func__);
+    OS_printf("CFE_PSP: CFE_PSP_AttachExceptions Called\n");
 
     /*
      * Block most other signals during handler execution.
@@ -244,12 +250,16 @@ void CFE_PSP_AttachExceptions(void)
     CFE_PSP_Exception_Reset();
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*
+**
+**   Name: CFE_PSP_SetDefaultExceptionEnvironment
+**
+**   Purpose: This function sets a default exception environment that can be used
+**
+**   Notes: The exception environment is local to each task Therefore this must be
+**          called for each task that that wants to do floating point and catch exceptions
+*/
+
 void CFE_PSP_SetDefaultExceptionEnvironment(void)
 {
     /*

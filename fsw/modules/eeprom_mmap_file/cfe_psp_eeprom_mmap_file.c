@@ -1,23 +1,25 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /**
- * \file
+ * \file cfe_psp_eeprom_mmap_file.c
  *
  *  Created on: Jul 17, 2015
  *      Author: joseph.p.hickey@nasa.gov
@@ -46,6 +48,7 @@ CFE_PSP_MODULE_DECLARE_SIMPLE(eeprom_mmap_file);
 */
 int32 CFE_PSP_SetupEEPROM(uint32 EEPROMSize, cpuaddr *EEPROMAddress)
 {
+
     int         FileDescriptor;
     int         ReturnStatus;
     char *      DataBuffer;
@@ -66,7 +69,7 @@ int32 CFE_PSP_SetupEEPROM(uint32 EEPROMSize, cpuaddr *EEPROMAddress)
         if (FileDescriptor == -1)
         {
             OS_printf("CFE_PSP: Cannot open EEPROM File: %s\n", EEPROM_FILE);
-            return -1;
+            return (-1);
         }
         else
         {
@@ -77,7 +80,7 @@ int32 CFE_PSP_SetupEEPROM(uint32 EEPROMSize, cpuaddr *EEPROMAddress)
             {
                 OS_printf("CFE_PSP: Cannot Seek to end of EEPROM file.\n");
                 close(FileDescriptor);
-                return -1;
+                return (-1);
             }
 
             /*
@@ -87,7 +90,7 @@ int32 CFE_PSP_SetupEEPROM(uint32 EEPROMSize, cpuaddr *EEPROMAddress)
             {
                 OS_printf("CFE_PSP: Cannot write to EEPROM file\n");
                 close(FileDescriptor);
-                return -1;
+                return (-1);
             }
         }
     }
@@ -101,7 +104,7 @@ int32 CFE_PSP_SetupEEPROM(uint32 EEPROMSize, cpuaddr *EEPROMAddress)
         {
             OS_printf("CFE_PSP: Cannot open EEPROM File: %s\n", EEPROM_FILE);
             perror("CFE_PSP: open");
-            return -1;
+            return (-1);
         }
     }
 
@@ -112,7 +115,7 @@ int32 CFE_PSP_SetupEEPROM(uint32 EEPROMSize, cpuaddr *EEPROMAddress)
     {
         OS_printf("CFE_PSP: mmap to EEPROM File failed\n");
         close(FileDescriptor);
-        return -1;
+        return (-1);
     }
 
     /*
@@ -120,7 +123,7 @@ int32 CFE_PSP_SetupEEPROM(uint32 EEPROMSize, cpuaddr *EEPROMAddress)
     */
     *EEPROMAddress = (cpuaddr)DataBuffer;
 
-    return 0;
+    return (0);
 }
 
 /* For read/write - As this is mmap'ed we dereference the pointer directly.
@@ -130,39 +133,39 @@ int32 CFE_PSP_SetupEEPROM(uint32 EEPROMSize, cpuaddr *EEPROMAddress)
 int32 CFE_PSP_EepromWrite32(cpuaddr MemoryAddress, uint32 uint32Value)
 {
     *((uint32 *)MemoryAddress) = uint32Value;
-    return CFE_PSP_SUCCESS;
+    return (CFE_PSP_SUCCESS);
 }
 
 int32 CFE_PSP_EepromWrite16(cpuaddr MemoryAddress, uint16 uint16Value)
 {
     *((uint16 *)MemoryAddress) = uint16Value;
-    return CFE_PSP_SUCCESS;
+    return (CFE_PSP_SUCCESS);
 }
 
 int32 CFE_PSP_EepromWrite8(cpuaddr MemoryAddress, uint8 ByteValue)
 {
     *((uint8 *)MemoryAddress) = ByteValue;
-    return CFE_PSP_SUCCESS;
+    return (CFE_PSP_SUCCESS);
 }
 
 int32 CFE_PSP_EepromWriteEnable(uint32 Bank)
 {
-    return CFE_PSP_ERROR_NOT_IMPLEMENTED;
+    return (CFE_PSP_ERROR_NOT_IMPLEMENTED);
 }
 
 int32 CFE_PSP_EepromWriteDisable(uint32 Bank)
 {
-    return CFE_PSP_ERROR_NOT_IMPLEMENTED;
+    return (CFE_PSP_ERROR_NOT_IMPLEMENTED);
 }
 
 int32 CFE_PSP_EepromPowerUp(uint32 Bank)
 {
-    return CFE_PSP_SUCCESS;
+    return (CFE_PSP_SUCCESS);
 }
 
 int32 CFE_PSP_EepromPowerDown(uint32 Bank)
 {
-    return CFE_PSP_SUCCESS;
+    return (CFE_PSP_SUCCESS);
 }
 
 void eeprom_mmap_file_Init(uint32 PspModuleId)

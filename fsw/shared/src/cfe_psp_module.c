@@ -1,23 +1,25 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /**
- * \file
+ * \file cfe_psp_module.c
  *
  *  Created on: Jul 25, 2014
  *      Author: jphickey
@@ -41,69 +43,53 @@
 #define CFE_PSP_MODULE_INDEX_MASK 0xFFFF
 #endif
 
-/*
- * Internal/base modules typically should not be the subject
- * of a call to CFE_PSP_Module_FindByName or GetAPI,
- * so they are assigned IDs at the END of the space,
- * this makes them unique but they are otherwise not used
- *
- * Reserve the last 256 entries for base modules
- */
-#define CFE_PSP_INTERNAL_MODULE_BASE ((CFE_PSP_MODULE_BASE | CFE_PSP_MODULE_INDEX_MASK) & ~0xFF)
-
-static uint32 CFE_PSP_ConfigPspModuleListLength = 0;
-static uint32 CFE_PSP_StandardPspModuleListLength = 0;
+static uint32 CFE_PSP_ModuleCount = 0;
 
 /***************************************************
+ * Function Name: CFE_PSP_ModuleInitList
  *
  * Helper function to initialize a list of modules (not externally called)
- * Returns the number of modules initialized
  */
-uint32_t CFE_PSP_ModuleInitList(uint32 BaseId, CFE_StaticModuleLoadEntry_t *ListPtr)
+void CFE_PSP_ModuleInitList(CFE_StaticModuleLoadEntry_t *ListPtr)
 {
     CFE_StaticModuleLoadEntry_t *Entry;
     CFE_PSP_ModuleApi_t *        ApiPtr;
-    uint32                       ModuleCount;
-    uint32                       ModuleId;
 
     /*
      * Call the init function for all statically linked modules
      */
-    Entry       = ListPtr;
-    ModuleCount = 0;
+    Entry = ListPtr;
     if (Entry != NULL)
     {
         while (Entry->Name != NULL)
         {
-            ApiPtr   = (CFE_PSP_ModuleApi_t *)Entry->Api;
-            ModuleId = BaseId + ModuleCount;
+            ApiPtr = (CFE_PSP_ModuleApi_t *)Entry->Api;
             if ((uint32)ApiPtr->ModuleType != CFE_PSP_MODULE_TYPE_INVALID && ApiPtr->Init != NULL)
             {
-                printf("CFE_PSP: initializing module \'%s\' with ID %08lx\n", Entry->Name, (unsigned long)ModuleId);
-                (*ApiPtr->Init)(ModuleId);
+                (*ApiPtr->Init)(CFE_PSP_MODULE_BASE | CFE_PSP_ModuleCount);
             }
             ++Entry;
-            ++ModuleCount;
+            ++CFE_PSP_ModuleCount;
         }
     }
-
-    return ModuleCount;
 }
 
 /***************************************************
+ * Function Name: CFE_PSP_ModuleInit
  *
  * See prototype for full description
  */
 void CFE_PSP_ModuleInit(void)
 {
     /* First initialize the fixed set of modules for this PSP */
-    CFE_PSP_StandardPspModuleListLength = CFE_PSP_ModuleInitList(CFE_PSP_INTERNAL_MODULE_BASE, CFE_PSP_BASE_MODULE_LIST);
+    CFE_PSP_ModuleInitList(CFE_PSP_BASE_MODULE_LIST);
 
     /* Then initialize any user-selected extension modules */
-    CFE_PSP_ConfigPspModuleListLength = CFE_PSP_ModuleInitList(CFE_PSP_MODULE_BASE, GLOBAL_CONFIGDATA.PspModuleList);
+    CFE_PSP_ModuleInitList(GLOBAL_CONFIGDATA.PspModuleList);
 }
 
 /***************************************************
+ * Function Name: CFE_PSP_Module_GetAPIEntry
  *
  * See prototype for full description
  */
@@ -115,24 +101,11 @@ int32 CFE_PSP_Module_GetAPIEntry(uint32 PspModuleId, CFE_PSP_ModuleApi_t **API)
     Result = CFE_PSP_INVALID_MODULE_ID;
     if ((PspModuleId & ~CFE_PSP_MODULE_INDEX_MASK) == CFE_PSP_MODULE_BASE)
     {
-        /* Last 256 enteries are for internal modules */
-        if((PspModuleId & CFE_PSP_MODULE_INDEX_MASK) >= 0xFF00 )
+        LocalId = PspModuleId & CFE_PSP_MODULE_INDEX_MASK;
+        if (LocalId < CFE_PSP_ModuleCount)
         {
-            LocalId = PspModuleId & 0xFF;
-            if (LocalId < CFE_PSP_StandardPspModuleListLength)
-            {
-                *API   = (CFE_PSP_ModuleApi_t *)CFE_PSP_BASE_MODULE_LIST[LocalId].Api;
-                Result = CFE_PSP_SUCCESS;
-            }
-        }
-        else
-        {
-            LocalId = PspModuleId & CFE_PSP_MODULE_INDEX_MASK;
-            if (LocalId < CFE_PSP_ConfigPspModuleListLength)
-            {
-                *API   = (CFE_PSP_ModuleApi_t *)GLOBAL_CONFIGDATA.PspModuleList[LocalId].Api;
-                Result = CFE_PSP_SUCCESS;
-            }
+            *API   = (CFE_PSP_ModuleApi_t *)GLOBAL_CONFIGDATA.PspModuleList[LocalId].Api;
+            Result = CFE_PSP_SUCCESS;
         }
     }
 
@@ -140,6 +113,7 @@ int32 CFE_PSP_Module_GetAPIEntry(uint32 PspModuleId, CFE_PSP_ModuleApi_t **API)
 }
 
 /***************************************************
+ * Function Name: CFE_PSP_Module_FindByName
  *
  * See prototype for full description
  */
@@ -152,9 +126,7 @@ int32 CFE_PSP_Module_FindByName(const char *ModuleName, uint32 *PspModuleId)
     Entry  = GLOBAL_CONFIGDATA.PspModuleList;
     Result = CFE_PSP_INVALID_MODULE_NAME;
     i      = 0;
-
-    /* Check global list */
-    while (i < CFE_PSP_ConfigPspModuleListLength)
+    while (i < CFE_PSP_ModuleCount)
     {
         if (strcmp(Entry->Name, ModuleName) == 0)
         {
@@ -164,24 +136,6 @@ int32 CFE_PSP_Module_FindByName(const char *ModuleName, uint32 *PspModuleId)
         }
         ++Entry;
         ++i;
-    }
-
-    /* Check internal list */
-    if (Result != CFE_PSP_SUCCESS)
-    {
-        Entry = CFE_PSP_BASE_MODULE_LIST;
-        i     = 0;
-        while (i < CFE_PSP_StandardPspModuleListLength)
-        {
-            if (strcmp(Entry->Name, ModuleName) == 0)
-            {
-                *PspModuleId = CFE_PSP_INTERNAL_MODULE_BASE | (i & CFE_PSP_MODULE_INDEX_MASK);
-                Result       = CFE_PSP_SUCCESS;
-                break;
-            }
-            ++Entry;
-            ++i;
-        }
     }
 
     return Result;

@@ -1,23 +1,25 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /**
- * \file
+ * \file cfe_psp_timebase_vxworks.c
  *
  * A PSP module to implement the PSP time API via the VxWorks
  * vxTimeBaseGet() routine.  The VxWorks timebase is a 64 bit
@@ -143,40 +145,67 @@ void timebase_vxworks_Init(uint32 PspModuleId)
     PSP_VxWorks_Timebase_Global.TicksPerSecond        = TicksPerSec & 0xFFFFFFFF;
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/******************************************************************************
+**  Function:  CFE_PSP_GetTimerTicksPerSecond()
+**
+**  Purpose:
+**    Provides the resolution of the least significant 32 bits of the 64 bit
+**    time stamp returned by CFE_PSP_Get_Timebase in timer ticks per second.
+**    The timer resolution for accuracy should not be any slower than 1000000
+**    ticks per second or 1 us per tick
+**
+**  Arguments:
+**
+**  Return:
+**    The number of timer ticks per second of the time stamp returned
+**    by CFE_PSP_Get_Timebase
+*/
 uint32 CFE_PSP_GetTimerTicksPerSecond(void)
 {
     return PSP_VxWorks_Timebase_Global.TicksPerSecond;
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/******************************************************************************
+**  Function:  CFE_PSP_GetTimerLow32Rollover()
+**
+**  Purpose:
+**    Provides the number that the least significant 32 bits of the 64 bit
+**    time stamp returned by CFE_PSP_Get_Timebase rolls over.  If the lower 32
+**    bits rolls at 1 second, then the CFE_PSP_TIMER_LOW32_ROLLOVER will be 1000000.
+**    if the lower 32 bits rolls at its maximum value (2^32) then
+**    CFE_PSP_TIMER_LOW32_ROLLOVER will be 0.
+**
+**  Arguments:
+**
+**  Return:
+**    The number that the least significant 32 bits of the 64 bit time stamp
+**    returned by CFE_PSP_Get_Timebase rolls over.
+*/
 uint32 CFE_PSP_GetTimerLow32Rollover(void)
 {
     return 0;
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/******************************************************************************
+**  Function:  CFE_PSP_Get_Timebase()
+**
+**  Purpose:
+**    Provides a common interface to system timebase. This routine
+**    is in the BSP because it is sometimes implemented in hardware and
+**    sometimes taken care of by the RTOS.
+**
+**  Arguments:
+**
+**  Return:
+**  Timebase register value
+*/
 void CFE_PSP_Get_Timebase(uint32 *Tbu, uint32 *Tbl)
 {
     vxTimeBaseGet((UINT32 *)Tbu, (UINT32 *)Tbl);
 }
 
 /******************************************************************************
+**  Function:  CFE_PSP_GetTime()
 **
 **  Purpose: Gets the value of the timebase from the hardware normalized as OS_time_t
 **
@@ -217,4 +246,5 @@ void CFE_PSP_GetTime(OS_time_t *LocalTime)
 
     /* Output the value as an OS_time_t */
     *LocalTime = (OS_time_t) {NormalizedTicks};
-}
+
+} /* end CFE_PSP_GetLocalTime */

@@ -1,20 +1,22 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /******************************************************************************
 ** File:  cfe_psp_memory.c
@@ -81,6 +83,7 @@ CFE_PSP_MemoryBlock_t MCP750_ReservedMemBlock;
 */
 
 /******************************************************************************
+**  Function: CFE_PSP_GetCDSSize
 **
 **  Purpose:
 **    This function fetches the size of the OS Critical Data Store area.
@@ -105,10 +108,11 @@ int32 CFE_PSP_GetCDSSize(uint32 *SizeOfCDS)
         *SizeOfCDS  = CFE_PSP_ReservedMemoryMap.CDSMemory.BlockSize;
         return_code = CFE_PSP_SUCCESS;
     }
-    return return_code;
+    return (return_code);
 }
 
 /******************************************************************************
+**  Function: CFE_PSP_WriteToCDS
 **
 **  Purpose:
 **    This function writes to the CDS Block.
@@ -146,10 +150,11 @@ int32 CFE_PSP_WriteToCDS(const void *PtrToDataToWrite, uint32 CDSOffset, uint32 
 
     } /* end if PtrToDataToWrite == NULL */
 
-    return return_code;
+    return (return_code);
 }
 
 /******************************************************************************
+**  Function: CFE_PSP_ReadFromCDS
 **
 **  Purpose:
 **   This function reads from the CDS Block
@@ -188,7 +193,7 @@ int32 CFE_PSP_ReadFromCDS(void *PtrToDataToRead, uint32 CDSOffset, uint32 NumByt
 
     } /* end if PtrToDataToWrite == NULL */
 
-    return return_code;
+    return (return_code);
 }
 
 /*
@@ -198,6 +203,7 @@ int32 CFE_PSP_ReadFromCDS(void *PtrToDataToRead, uint32 CDSOffset, uint32 NumByt
 */
 
 /******************************************************************************
+**  Function: CFE_PSP_GetResetArea
 **
 **  Purpose:
 **     This function returns the location and size of the ES Reset information area.
@@ -225,7 +231,7 @@ int32 CFE_PSP_GetResetArea(cpuaddr *PtrToResetArea, uint32 *SizeOfResetArea)
         return_code      = CFE_PSP_SUCCESS;
     }
 
-    return return_code;
+    return (return_code);
 }
 
 /*
@@ -235,6 +241,7 @@ int32 CFE_PSP_GetResetArea(cpuaddr *PtrToResetArea, uint32 *SizeOfResetArea)
 */
 
 /******************************************************************************
+**  Function: CFE_PSP_GetUserReservedArea
 **
 **  Purpose:
 **    This function returns the location and size of the memory used for the cFE
@@ -261,7 +268,7 @@ int32 CFE_PSP_GetUserReservedArea(cpuaddr *PtrToUserArea, uint32 *SizeOfUserArea
         return_code     = CFE_PSP_SUCCESS;
     }
 
-    return return_code;
+    return (return_code);
 }
 
 /*
@@ -271,6 +278,7 @@ int32 CFE_PSP_GetUserReservedArea(cpuaddr *PtrToUserArea, uint32 *SizeOfUserArea
 */
 
 /******************************************************************************
+**  Function: CFE_PSP_GetVolatileDiskMem
 **
 **  Purpose:
 **    This function returns the location and size of the memory used for the cFE
@@ -297,7 +305,7 @@ int32 CFE_PSP_GetVolatileDiskMem(cpuaddr *PtrToVolDisk, uint32 *SizeOfVolDisk)
         return_code    = CFE_PSP_SUCCESS;
     }
 
-    return return_code;
+    return (return_code);
 }
 
 /*
@@ -307,6 +315,7 @@ int32 CFE_PSP_GetVolatileDiskMem(cpuaddr *PtrToVolDisk, uint32 *SizeOfVolDisk)
 */
 
 /******************************************************************************
+**  Function: CFE_PSP_InitProcessorReservedMemory
 **
 **  Purpose:
 **    This function performs the top level reserved memory initialization.
@@ -332,10 +341,11 @@ int32 CFE_PSP_InitProcessorReservedMemory(uint32 RestartType)
         CFE_PSP_ReservedMemoryMap.BootPtr->bsp_reset_type = CFE_PSP_RST_TYPE_PROCESSOR;
     }
     return_code = CFE_PSP_SUCCESS;
-    return return_code;
+    return (return_code);
 }
 
 /******************************************************************************
+**  Function: CFE_PSP_SetupReservedMemoryMap
 **
 **  Purpose:
 **    Set up the CFE_PSP_ReservedMemoryMap global data structure
@@ -406,6 +416,7 @@ void CFE_PSP_SetupReservedMemoryMap(void)
 }
 
 /******************************************************************************
+ * Function: CFE_PSP_DeleteProcessorReservedMemory
  *
  * No action on MCP750 - reserved block is statically allocated at sysMemTop.
  * Implemented for API consistency with other PSPs.
@@ -419,6 +430,7 @@ void CFE_PSP_DeleteProcessorReservedMemory(void) {}
 */
 
 /******************************************************************************
+**  Function: CFE_PSP_GetKernelTextSegmentInfo
 **
 **  Purpose:
 **    This function returns the start and end address of the kernel text segment.
@@ -456,10 +468,11 @@ int32 CFE_PSP_GetKernelTextSegmentInfo(cpuaddr *PtrToKernelSegment, uint32 *Size
         return_code = CFE_PSP_SUCCESS;
     }
 
-    return return_code;
+    return (return_code);
 }
 
 /******************************************************************************
+**  Function: CFE_PSP_GetCFETextSegmentInfo
 **
 **  Purpose:
 **    This function returns the start and end address of the CFE text segment.
@@ -537,5 +550,5 @@ int32 CFE_PSP_GetCFETextSegmentInfo(cpuaddr *PtrToCFESegment, uint32 *SizeOfCFES
         }
     }
 
-    return return_code;
+    return (return_code);
 }

@@ -1,20 +1,22 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /******************************************************************************
 **
@@ -137,24 +139,20 @@ void CFE_PSP_Exception_WriteComplete(void)
  **                   (Functions used by CFE or PSP)
  ***************************************************************************/
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*---------------------------------------------------------------------------
+ * CFE_PSP_Exception_GetCount
+ * See description in PSP API
+ *---------------------------------------------------------------------------*/
 uint32 CFE_PSP_Exception_GetCount(void)
 {
     return (CFE_PSP_ReservedMemoryMap.ExceptionStoragePtr->NumWritten -
             CFE_PSP_ReservedMemoryMap.ExceptionStoragePtr->NumRead);
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*---------------------------------------------------------------------------
+ * CFE_PSP_Exception_GetSummary
+ * See description in PSP API
+ *---------------------------------------------------------------------------*/
 int32 CFE_PSP_Exception_GetSummary(uint32 *ContextLogId, osal_id_t *TaskId, char *ReasonBuf, uint32 ReasonSize)
 {
     const CFE_PSP_Exception_LogData_t *Buffer;
@@ -214,12 +212,10 @@ int32 CFE_PSP_Exception_GetSummary(uint32 *ContextLogId, osal_id_t *TaskId, char
     return CFE_PSP_SUCCESS;
 }
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+/*---------------------------------------------------------------------------
+ * CFE_PSP_Exception_CopyContext
+ * See description in PSP API
+ *---------------------------------------------------------------------------*/
 int32 CFE_PSP_Exception_CopyContext(uint32 ContextLogId, void *ContextBuf, uint32 ContextSize)
 {
     const CFE_PSP_Exception_LogData_t *Buffer;

@@ -1,20 +1,12 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
+/*
+ *      Copyright (c) 2019, United States government as represented by the
+ *      administrator of the National Aeronautics Space Administration.
+ *      All rights reserved. This software was created at NASA Goddard
+ *      Space Flight Center pursuant to government contracts.
  *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+ *      This is governed by the NASA Open Source Agreement and may be used,
+ *      distributed and modified only according to the terms of that agreement.
+ */
 
 /* PSP coverage stub replacement for taskLib.h */
 #include <string.h>
@@ -40,12 +32,10 @@ const char *PCS_taskName(PCS_TASK_ID task_id)
 
     return retval;
 }
-
 void PCS_taskExit(int code)
 {
     UT_DEFAULT_IMPL(PCS_taskExit);
 }
-
 PCS_TASK_ID PCS_taskIdSelf(void)
 {
     int32 Status;
@@ -53,12 +43,11 @@ PCS_TASK_ID PCS_taskIdSelf(void)
     Status = UT_DEFAULT_IMPL(PCS_taskIdSelf);
     if (Status != 0)
     {
-        return (PCS_TASK_ID)PCS_ERROR;
+        return ((PCS_TASK_ID)PCS_ERROR);
     }
 
     return &PCS_LOCAL_TASK;
 }
-
 PCS_TASK_ID PCS_taskNameToId(const char *name)
 {
     int32 Status;
@@ -66,47 +55,41 @@ PCS_TASK_ID PCS_taskNameToId(const char *name)
     Status = UT_DEFAULT_IMPL(PCS_taskNameToId);
     if (Status != 0)
     {
-        return (PCS_TASK_ID)PCS_ERROR;
+        return ((PCS_TASK_ID)PCS_ERROR);
     }
 
     return &PCS_LOCAL_TASK;
 }
-
 PCS_STATUS PCS_taskDelay(int ticks)
 {
-    return UT_DEFAULT_IMPL(PCS_taskDelay);
+    return (UT_DEFAULT_IMPL(PCS_taskDelay));
 }
-
 PCS_STATUS PCS_taskDelete(PCS_TASK_ID tid)
 {
-    return UT_DEFAULT_IMPL(PCS_taskDelete);
+    return (UT_DEFAULT_IMPL(PCS_taskDelete));
 }
-
 PCS_STATUS PCS_taskDeleteForce(PCS_TASK_ID tid)
 {
-    return UT_DEFAULT_IMPL(PCS_taskDeleteForce);
+    return (UT_DEFAULT_IMPL(PCS_taskDeleteForce));
 }
-
 PCS_STATUS PCS_taskSuspend(PCS_TASK_ID tid)
 {
-    return UT_DEFAULT_IMPL(PCS_taskSuspend);
+    return (UT_DEFAULT_IMPL(PCS_taskSuspend));
 }
-
 PCS_STATUS PCS_taskResume(PCS_TASK_ID tid)
 {
-    return UT_DEFAULT_IMPL(PCS_taskResume);
+    return (UT_DEFAULT_IMPL(PCS_taskResume));
 }
-
 PCS_STATUS PCS_taskPrioritySet(PCS_TASK_ID tid, int newPriority)
 {
-    return UT_DEFAULT_IMPL(PCS_taskPrioritySet);
+    return (UT_DEFAULT_IMPL(PCS_taskPrioritySet));
 }
 
 PCS_STATUS PCS_taskInit(PCS_WIND_TCB *pTcb, char *name, int priority, int options, char *pStackBase, int stackSize,
                         PCS_FUNCPTR entryPt, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7,
                         int arg8, int arg9, int arg10)
 {
-    return UT_DEFAULT_IMPL(PCS_taskInit);
+    return (UT_DEFAULT_IMPL(PCS_taskInit));
 }
 
 PCS_TASK_ID PCS_taskSpawn(char *name, int priority, int options, int stackSize, PCS_FUNCPTR entryPt, int arg1, int arg2,
@@ -118,7 +101,7 @@ PCS_TASK_ID PCS_taskSpawn(char *name, int priority, int options, int stackSize, 
     Status = UT_DEFAULT_IMPL(PCS_taskSpawn);
     if (Status != 0)
     {
-        return (PCS_TASK_ID)PCS_ERROR;
+        return ((PCS_TASK_ID)PCS_ERROR);
     }
 
     return &PCS_LOCAL_TASK;
@@ -141,7 +124,7 @@ PCS_WIND_TCB *PCS_taskTcb(PCS_TASK_ID tid)
     Status = UT_DEFAULT_IMPL(PCS_taskTcb);
     if (Status != 0)
     {
-        return NULL;
+        return (NULL);
     }
 
     if (UT_Stub_CopyToLocal(UT_KEY(PCS_taskTcb), &LocalTcb, sizeof(LocalTcb)) < sizeof(LocalTcb))

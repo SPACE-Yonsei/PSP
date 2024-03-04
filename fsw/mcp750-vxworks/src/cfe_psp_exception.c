@@ -1,20 +1,22 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /******************************************************************************
 **
@@ -72,6 +74,8 @@ void CFE_PSP_ExceptionHook(TASK_ID task_id, int vector, void *vpEsf);
 
 /*
 **
+**   Name: CFE_PSP_AttachExceptions
+**
 **   Purpose: This function Initializes the task exceptions and adds a hook
 **              into the VxWorks exception handling.  The below hook is called
 **              for every exception that VxWorks catches.
@@ -90,6 +94,7 @@ void CFE_PSP_AttachExceptions(void)
 }
 
 /*
+** Name: CFE_PSP_ExceptionHook
 **
 ** Purpose: Make the proper call to CFE_ES_EXCEPTION_FUNCTION (defined in
 **          cfe_es_platform.cfg)
@@ -150,14 +155,18 @@ void CFE_PSP_ExceptionHook(TASK_ID task_id, int vector, void *vpEsf)
         /* notify the CFE of the event */
         GLOBAL_CFE_CONFIGDATA.SystemNotify();
     }
-}
 
-/*----------------------------------------------------------------
- *
- * Implemented per public API
- * See description in header file for argument/return detail
- *
- *-----------------------------------------------------------------*/
+} /* end function */
+
+/*
+**
+**   Name: CFE_PSP_SetDefaultExceptionEnvironment
+**
+**   Purpose: This function sets a default exception environment that can be used
+**
+**   Notes: The exception environment is local to each task Therefore this must be
+**          called for each task that that wants to do floating point and catch exceptions
+*/
 void CFE_PSP_SetDefaultExceptionEnvironment(void)
 {
     vxMsrSet(vxMsrGet() | _PPC_MSR_EE | /* enable the external interrupt */
@@ -177,6 +186,8 @@ void CFE_PSP_SetDefaultExceptionEnvironment(void)
 }
 
 /*
+ * Name: CFE_PSP_ExceptionGetSummary_Impl
+ *
  * Purpose: Translate a stored exception log entry into a summary string
  */
 int32 CFE_PSP_ExceptionGetSummary_Impl(const CFE_PSP_Exception_LogData_t *Buffer, char *ReasonBuf, uint32 ReasonSize)

@@ -13,14 +13,15 @@
 
 project(PSPCOVERAGE C)
 
-set(PSPCOVERAGE_TARGETS mcp750-vxworks pc-rtems CACHE STRING "PSP target(s) to build coverage tests for (default=all)")
+# Currently only mcp750-vxworks is implemented a demonstration of how this works.
+set(PSPCOVERAGE_TARGETS "mcp750-vxworks" CACHE STRING "PSP target(s) to build coverage tests for (default=all)")
 
 # Check that coverage has been implemented for this PSPTYPE
 foreach(PSPTYPE ${PSPCOVERAGE_TARGETS})
     if (NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PSPTYPE})
       message(FATAL_ERROR "No coverage tests implemented for ${PSPTYPE}")
-    endif ()
-endforeach()
+    endif (NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PSPTYPE})
+endforeach(PSPTYPE ${PSPCOVERAGE_TARGETS})
 
 message(STATUS "PSP Coverage Test Targets: ${PSPCOVERAGE_TARGETS}")
 
@@ -34,5 +35,5 @@ add_subdirectory(modules)
 # Build targets for each of the indicated PSPs
 foreach(SETNAME ${PSPCOVERAGE_TARGETS})
     add_subdirectory(${SETNAME})
-endforeach()
+endforeach(SETNAME ${PSPCOVERAGE_TARGETS})
 

@@ -1,20 +1,22 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /*
 ** File: ut_bsp_stubs.c
@@ -66,7 +68,11 @@ Target_ConfigData GLOBAL_CONFIGDATA = {.MissionVersion       = "MissionUnitTest"
 **
 ** \par Description
 **        This function is used to mimic the response of the OS API function
-**        CFE_PSP_Panic.
+**        CFE_PSP_Panic.  The variable PSPPanicRtn.value is set equal to the
+**        input variable ErrorCode and the variable PSPPanicRtn.count is
+**        incremented each time this function is called.  The unit tests
+**        compare these values to expected results to verify proper system
+**        response.
 **
 ** \par Assumptions, External Events, and Notes:
 **        None
@@ -164,7 +170,7 @@ const char *CFE_PSP_GetProcessorName(void)
 
 /*****************************************************************************/
 /**
-** \brief CFE_PSP_GetTime stub function
+v** \brief CFE_PSP_GetTime stub function
 **
 ** \par Description
 **        This function is used as a placeholder for the PSP function
@@ -199,7 +205,13 @@ void CFE_PSP_GetTime(OS_time_t *LocalTime)
 **
 ** \par Description
 **        This function is used to mimic the response of the PSP function
-**        CFE_PSP_WriteToCDS.
+**        CFE_PSP_WriteToCDS.  The user can adjust the response by setting
+**        the values in the BSPWriteCDSRtn structure prior to this function
+**        being called.  If the value BSPWriteCDSRtn.count is greater than
+**        zero then the counter is decremented; if it then equals zero the
+**        return value is set to the user-defined value BSPWriteCDSRtn.value.
+**        Otherwise, the value of the user-defined variable UT_BSP_Fail
+**        determines the status returned by the function.
 **
 ** \par Assumptions, External Events, and Notes:
 **        None
@@ -235,7 +247,13 @@ int32 CFE_PSP_WriteToCDS(const void *PtrToDataToWrite, uint32 CDSOffset, uint32 
 **
 ** \par Description
 **        This function is used to mimic the response of the PSP function
-**        CFE_PSP_ReadFromCDS.
+**        CFE_PSP_ReadFromCDS.  The user can adjust the response by setting
+**        the values in the BSPReadCDSRtn structure prior to this function
+**        being called.  If the value BSPReadCDSRtn.count is greater than
+**        zero then the counter is decremented; if it then equals zero the
+**        return value is set to the user-defined value BSPReadCDSRtn.value.
+**        Otherwise, the value of the user-defined variable UT_BSP_Fail
+**        determines the status returned by the function.
 **
 ** \par Assumptions, External Events, and Notes:
 **        None
@@ -271,7 +289,8 @@ int32 CFE_PSP_ReadFromCDS(void *PtrToDataToRead, uint32 CDSOffset, uint32 NumByt
 **
 ** \par Description
 **        This function is used to mimic the response of the PSP function
-**        CFE_PSP_GetCDSSize.
+**        CFE_PSP_GetCDSSize.  The user can adjust the response by
+**        setting the value of UT_BSP_Fail prior to this function being called.
 **
 ** \par Assumptions, External Events, and Notes:
 **        None
@@ -302,7 +321,8 @@ int32 CFE_PSP_GetCDSSize(uint32 *SizeOfCDS)
 **
 ** \par Description
 **        This function is used to mimic the response of the PSP function
-**        CFE_PSP_GetVolatileDiskMem.
+**        CFE_PSP_GetVolatileDiskMem.  The user can adjust the response by
+**        setting the value of UT_BSP_Fail prior to this function being called.
 **
 ** \par Assumptions, External Events, and Notes:
 **        None
@@ -336,7 +356,11 @@ int32 CFE_PSP_GetVolatileDiskMem(cpuaddr *PtrToVolDisk, uint32 *SizeOfVolDisk)
 **
 ** \par Description
 **        This function is used as a placeholder for the PSP function
-**        CFE_PSP_Restart.
+**        CFE_PSP_Restart.  The variable PSPRestartRtn.value is set to the
+**        value passed to the function, reset_type, and the variable
+**        PSPRestartRtn.count is incremented each time this function is called.
+**        The unit tests compare these values to expected results to verify
+**        proper system response.
 **
 ** \par Assumptions, External Events, and Notes:
 **        None
@@ -345,10 +369,10 @@ int32 CFE_PSP_GetVolatileDiskMem(cpuaddr *PtrToVolDisk, uint32 *SizeOfVolDisk)
 **        This function does not return a value.
 **
 ******************************************************************************/
-void CFE_PSP_Restart(uint32 resetType)
+void CFE_PSP_Restart(uint32 reset_type)
 {
     UT_DEFAULT_IMPL(CFE_PSP_Restart);
-    UT_Stub_CopyFromLocal(UT_KEY(CFE_PSP_Restart), (uint8 *)&resetType, sizeof(resetType));
+    UT_Stub_CopyFromLocal(UT_KEY(CFE_PSP_Restart), (uint8 *)&reset_type, sizeof(reset_type));
 }
 
 /*****************************************************************************/
@@ -533,7 +557,7 @@ int32 CFE_PSP_GetCFETextSegmentInfo(cpuaddr *PtrToCFESegment, uint32 *SizeOfCFES
     if (status >= 0)
     {
         UT_GetDataBuffer(UT_KEY(CFE_PSP_GetCFETextSegmentInfo), &TempAddr, &TempSize, NULL);
-        if (TempAddr == NULL)
+        if (*PtrToCFESegment == 0)
         {
             /* Backup -- Set the pointer and size to anything */
             *PtrToCFESegment  = (cpuaddr)&LocalTextSegment;
@@ -578,7 +602,7 @@ int32 CFE_PSP_GetKernelTextSegmentInfo(cpuaddr *PtrToKernelSegment, uint32 *Size
     if (status >= 0)
     {
         UT_GetDataBuffer(UT_KEY(CFE_PSP_GetKernelTextSegmentInfo), &TempAddr, &TempSize, NULL);
-        if (TempAddr == NULL)
+        if (*PtrToKernelSegment == 0)
         {
             /* Backup -- Set the pointer and size to anything */
             *PtrToKernelSegment  = (cpuaddr)&LocalTextSegment;
@@ -668,7 +692,7 @@ int32 CFE_PSP_MemValidateRange(cpuaddr Address, size_t Size, uint32 MemoryType)
 **        Returns OS_SUCCESS.
 **
 ******************************************************************************/
-int32 CFE_PSP_MemCpy(void *dest, const void *src, uint32 n)
+int32 CFE_PSP_MemCpy(void *dst, const void *src, uint32 size)
 {
     int32 status;
 
@@ -677,7 +701,7 @@ int32 CFE_PSP_MemCpy(void *dest, const void *src, uint32 n)
     if (status >= 0)
     {
         /* this is not actually a stub; it actually has to _do_ the intended function */
-        memcpy(dest, src, n);
+        memcpy(dst, src, size);
     }
 
     return status;
@@ -698,7 +722,7 @@ int32 CFE_PSP_MemCpy(void *dest, const void *src, uint32 n)
 **        Returns OS_SUCCESS.
 **
 ******************************************************************************/
-int32 CFE_PSP_MemSet(void *dest, uint8 value, uint32 n)
+int32 CFE_PSP_MemSet(void *dst, uint8 value, uint32 size)
 {
     int32 status;
 
@@ -707,7 +731,7 @@ int32 CFE_PSP_MemSet(void *dest, uint8 value, uint32 n)
     if (status >= 0)
     {
         /* this is not actually a stub; it actually has to _do_ the intended function */
-        memset(dest, (int)value, (size_t)n);
+        memset(dst, (int)value, (size_t)size);
     }
 
     return status;
@@ -755,6 +779,8 @@ int32 CFE_PSP_Exception_CopyContext(uint32 ContextLogId, void *ContextBuf, uint3
 
 /*----------------------------------------------------------------
  *
+ * Function: CFE_PSP_GetVersionString
+ *
  *  Purpose: Implemented per public OSAL API
  *           See description in API and header file for detail
  *
@@ -779,6 +805,8 @@ const char *CFE_PSP_GetVersionString(void)
 }
 
 /*----------------------------------------------------------------
+ *
+ * Function: CFE_PSP_GetVersionCodeName
  *
  *  Purpose: Implemented per public OSAL API
  *           See description in API and header file for detail
@@ -805,6 +833,8 @@ const char *CFE_PSP_GetVersionCodeName(void)
 
 /*----------------------------------------------------------------
  *
+ * Function: CFE_PSP_GetVersionNumber
+ *
  *  Purpose: Implemented per public OSAL API
  *           See description in API and header file for detail
  *
@@ -816,6 +846,8 @@ void CFE_PSP_GetVersionNumber(uint8 VersionNumbers[4])
 }
 
 /*----------------------------------------------------------------
+ *
+ * Function: CFE_PSP_GetBuildNumber
  *
  *  Purpose: Implemented per public OSAL API
  *           See description in API and header file for detail

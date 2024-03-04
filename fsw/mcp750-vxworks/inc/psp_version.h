@@ -1,57 +1,48 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
-/*! @file
+/*! @file mcp750-vxworks/inc/psp_version.h
  *  @brief Purpose:
  *  @details Provide version identifiers for the cFE Platform Support Packages (PSP).
  *  See @ref cfsversions for version and build number and description
  */
-#ifndef PSP_VERSION_H
-#define PSP_VERSION_H
+#ifndef _psp_version_
+#define _psp_version_
 
 /*
  * Development Build Macro Definitions
  */
-#define CFE_PSP_IMPL_BUILD_NUMBER   38
-#define CFE_PSP_IMPL_BUILD_BASELINE "equuleus-rc1"
-#define CFE_PSP_BUILD_DEV_CYCLE     "equuleus-rc2" /**< @brief Development: Release name for current development cycle */
-#define CFE_PSP_BUILD_CODENAME      "Equuleus" /**< @brief: Development: Code name for the current build */
+#define CFE_PSP_IMPL_BUILD_NUMBER   124
+#define CFE_PSP_IMPL_BUILD_BASELINE "v1.5.0-rc1"
 
 /*
- * Version Macros, see \ref cfsversions for definitions.
+ * Version Macro Definitions
  */
-#define CFE_PSP_IMPL_MAJOR_VERSION 1  /*!< @brief Major version number */
-#define CFE_PSP_IMPL_MINOR_VERSION 4  /*!< @brief Minor version number */
-#define CFE_PSP_IMPL_REVISION      0  /*!< @brief Revision version number. Value of 0 indicates a development version.*/
+#define CFE_PSP_IMPL_MAJOR_VERSION 1 /*!< @brief ONLY APPLY for OFFICIAL releases. Major version number. */
+#define CFE_PSP_IMPL_MINOR_VERSION 4 /*!< @brief ONLY APPLY for OFFICIAL releases. Minor version number. */
+#define CFE_PSP_IMPL_REVISION      0 /*!< @brief ONLY APPLY for OFFICIAL releases. Revision number. */
+#define CFE_PSP_IMPL_MISSION_REV                                                                                      \
+    99 /*!< @brief ONLY APPLY for OFFICIAL releases. Revision version number. A value of "99" indicates an unreleased \
+          development version.  */
 
-/**
- * @brief Last official release.
- */
-#define CFE_PSP_LAST_OFFICIAL "v1.4.0"
-
-/*!
- * @brief Mission revision.
- *
- * Reserved for mission use to denote patches/customizations as needed.
- * Values 1-254 are reserved for mission use to denote patches/customizations as needed. NOTE: Reserving 0 and 0xFF for
- * cFS open-source development use (pending resolution of nasa/cFS#440)
- */
-#define CFE_PSP_IMPL_MISSION_REV 0xFF
+#define CFE_PSP_IMPL_CODENAME "Bootes"
 
 /*
  * Tools to construct version string
@@ -66,12 +57,12 @@
  */
 #define CFE_PSP_IMPL_VERSION CFE_PSP_IMPL_BUILD_BASELINE "+dev" CFE_PSP_IMPL_STR(CFE_PSP_IMPL_BUILD_NUMBER)
 
-/**
- * @brief Max Version String length.
- * 
- * Maximum length that a tblCRCTool version string can be.
- * 
+/*! @brief DEVELOPMENT Build Version String.
+ *  @details Reports the current development build's baseline, number, and name. Also includes a note about the latest
+ * official version. @n See @ref cfsversions for format differences between development and release versions.
  */
-#define CFE_PSP_CFG_MAX_VERSION_STR_LEN 256
+#define CFE_PSP_IMPL_VERSION_STRING                                                       \
+    " PSP Development Build " CFE_PSP_IMPL_VERSION /* Codename for current development */ \
+    ", Last Official Release: psp v1.4.0"          /* For full support please use this version */
 
-#endif
+#endif /* _psp_version_ */

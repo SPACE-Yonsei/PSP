@@ -1,20 +1,22 @@
-/************************************************************************
- * NASA Docket No. GSC-18,719-1, and identified as “core Flight System: Bootes”
- *
- * Copyright (c) 2020 United States Government as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- * All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ************************************************************************/
+/*
+**  GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**  Copyright (c) 2006-2019 United States Government as represented by
+**  the Administrator of the National Aeronautics and Space Administration.
+**  All Rights Reserved.
+**
+**  Licensed under the Apache License, Version 2.0 (the "License");
+**  you may not use this file except in compliance with the License.
+**  You may obtain a copy of the License at
+**
+**    http://www.apache.org/licenses/LICENSE-2.0
+**
+**  Unless required by applicable law or agreed to in writing, software
+**  distributed under the License is distributed on an "AS IS" BASIS,
+**  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**  See the License for the specific language governing permissions and
+**  limitations under the License.
+*/
 
 /*
 ** cFE Support routines
@@ -58,6 +60,7 @@ extern SYMTAB_ID sysSymTbl;
 extern int DriveNum;
 
 /*
+** Function: GetWrsKernelTextStart
 ** Purpose:  This function returns the start address of the kernel code.
 **
 */
@@ -67,6 +70,7 @@ unsigned int GetWrsKernelTextStart(void)
 }
 
 /*
+** Function: GetWrsKernelTextEnd
 ** Purpose:  This function returns the end address of the kernel code.
 **
 */
@@ -76,6 +80,7 @@ unsigned int GetWrsKernelTextEnd(void)
 }
 
 /*
+** Function: loadCfeCore
 ** Purpose:  This function unzips ( if needed ) , loads, and starts the cFE core.
 **
 */
@@ -92,7 +97,7 @@ int startCfeCore(char *cfevolume, char *cfepath)
     if (cfevolume == NULL || cfepath == NULL)
     {
         printf("Error: No cFE volume or path/filename given.\n");
-        return -1;
+        return (-1);
     }
 
     /*
@@ -110,7 +115,7 @@ int startCfeCore(char *cfevolume, char *cfepath)
     if (fd < 0)
     {
         printf("Error: Cannot open cFE core file: %s!\n", cfeCorePath);
-        return -1;
+        return (-1);
     }
     else
     {
@@ -125,7 +130,7 @@ int startCfeCore(char *cfevolume, char *cfepath)
     {
         printf("Error: Cannot load cFE core module.\n");
         close(fd);
-        return -1;
+        return (-1);
     }
     else
     {
@@ -148,7 +153,7 @@ int startCfeCore(char *cfevolume, char *cfepath)
         if (status == ERROR)
         {
             printf("Error: Cannot locate CFE_PSP_Main or OS_BSPMain symbols.\n");
-            return -1;
+            return (-1);
         }
     }
 
@@ -161,10 +166,11 @@ int startCfeCore(char *cfevolume, char *cfepath)
     /*
     ** Return to the vxWorks shell
     */
-    return 0;
+    return (0);
 }
 
 /******************************************************************************
+**  Function:  CFE_PSP_InitFlashDisk()
 **
 **  Purpose:
 **    Initialize the Compact flash disk in vxWorks
@@ -244,5 +250,5 @@ int CFE_PSP_InitFlashDisk(void)
 
     } /* end if */
 
-    return Status;
+    return (Status);
 }
